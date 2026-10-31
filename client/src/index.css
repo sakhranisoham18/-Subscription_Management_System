@@ -1,0 +1,54 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Inter', 'InterVariable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+
+  --color-ink: #0f1b3d;          /* navy typography */
+  --color-ink-soft: #3b4668;
+  --color-muted: #56657d;   /* ≥ 5.29:1 on every surface used (AA needs 4.5:1) */
+  --color-line: #e5e8f0;
+  --color-canvas: #f6f7fb;
+  --color-surface: #ffffff;
+
+  --color-brand-50: #eef2ff;
+  --color-brand-100: #e0e7ff;
+  --color-brand-200: #c7d2fe;
+  --color-brand-300: #a5b4fc;
+  --color-brand-500: #6366f1;
+  --color-brand-600: #4f46e5;
+  --color-brand-700: #4338ca;
+  --color-brand-900: #1e1b4b;
+
+  --color-accent: #f59e0b;
+
+  --shadow-card: 0 1px 2px rgb(15 27 61 / 0.04), 0 1px 3px rgb(15 27 61 / 0.06);
+  --radius-xl: 0.875rem;
+}
+
+@layer base {
+  html {
+    color: var(--color-ink);
+    background: var(--color-canvas);
+    -webkit-font-smoothing: antialiased;
+  }
+  body {
+    min-height: 100vh;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-brand-500);
+    outline-offset: 2px;
+  }
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+.skeleton {
+  background: linear-gradient(90deg, #eef0f5 25%, #f6f7fb 37%, #eef0f5 63%);
+  background-size: 800px 100%;
+  animation: shimmer 1.4s ease infinite;
+}
