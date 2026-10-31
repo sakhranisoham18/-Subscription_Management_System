@@ -1,0 +1,5 @@
+MEMBER 2 - Catalog-Customers-UIkit-Docs
+1. Set your identity once:  git config --global user.name "Your Name"  and  git config --global user.email "you@example.com"
+2. In this folder run:  bash git-split/upload.sh 2 https://github.com/ORG/REPO.git
+   Wait until Member 1 has pushed main. This pushes branch feature/member2 and opens a pull request if gh is installed; then merge the PR on GitHub.
+Requires Git (Git Bash on Windows). See git-split/TEAM-SPLIT.md for the full plan.

@@ -1,0 +1,2805 @@
+{
+  "info": {
+    "name": "Brightloop Software — Subscription Management System",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Run \"Auth / Sign in\" first; the test script stores the access token in {{token}}."
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:4000/api/v1"
+    },
+    {
+      "key": "token",
+      "value": ""
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register a customer account",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Asha Verma\",\n  \"email\": \"asha@example.com\",\n  \"password\": \"Str0ng!Pass\",\n  \"companyName\": \"Verma Stores\"\n}"
+            },
+            "description": "Roles: Public"
+          }
+        },
+        {
+          "name": "Sign in (returns access token, sets refresh cookie)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const j = pm.response.json();",
+                  "if (j.data) pm.collectionVariables.set('token', j.data.accessToken);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@brightloop.demo\",\n  \"password\": \"Admin@12345\"\n}"
+            },
+            "description": "Roles: Public"
+          }
+        },
+        {
+          "name": "Rotate refresh cookie and get a new access token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/refresh",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "refresh"
+              ]
+            },
+            "description": "Roles: Cookie"
+          }
+        },
+        {
+          "name": "Revoke the refresh token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/logout",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "logout"
+              ]
+            },
+            "description": "Roles: Cookie"
+          }
+        },
+        {
+          "name": "Email a time-limited reset link (generic response)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/forgot-password",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "forgot-password"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"customer@example.com\"\n}"
+            },
+            "description": "Roles: Public"
+          }
+        },
+        {
+          "name": "Set a new password with a reset token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/reset-password",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "reset-password"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"<token>\",\n  \"password\": \"N3w!Password\"\n}"
+            },
+            "description": "Roles: Public"
+          }
+        },
+        {
+          "name": "Current user and permissions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "me"
+              ]
+            },
+            "description": "Roles: Any"
+          }
+        },
+        {
+          "name": "Update own name/phone",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "me"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"New Name\"\n}"
+            },
+            "description": "Roles: Any"
+          }
+        },
+        {
+          "name": "Change own password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/change-password",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "change-password"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currentPassword\": \"...\",\n  \"newPassword\": \"...\"\n}"
+            },
+            "description": "Roles: Any"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Staff",
+      "item": [
+        {
+          "name": "List staff and admins",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users"
+              ]
+            },
+            "description": "Roles: Admin"
+          }
+        },
+        {
+          "name": "Create a staff/admin account",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"New Staff\",\n  \"email\": \"new.staff@brightloop.demo\",\n  \"role\": \"STAFF\",\n  \"sendInvite\": true\n}"
+            },
+            "description": "Roles: Admin"
+          }
+        },
+        {
+          "name": "Update role/status (deactivate)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                ":id"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"INACTIVE\"\n}"
+            },
+            "description": "Roles: Admin"
+          }
+        },
+        {
+          "name": "Send a password reset link",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/:id/send-reset",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                ":id",
+                "send-reset"
+              ]
+            },
+            "description": "Roles: Admin"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Customers",
+      "item": [
+        {
+          "name": "List/search customers (?search=&status=&page=)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/customers",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "customers"
+              ]
+            },
+            "description": "Roles: Admin, Staff"
+          }
+        },
+        {
+          "name": "Customer detail with linked records",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/customers/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "customers",
+                ":id"
+              ]
+            },
+            "description": "Roles: Admin, Staff"
+          }
+        },
+        {
+          "name": "Create a customer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/customers",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "customers"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Rahul Mehta\",\n  \"companyName\": \"Mehta Retail\",\n  \"email\": \"rahul@mehta.example\",\n  \"city\": \"Lucknow\"\n}"
+            },
+            "description": "Roles: Admin, Staff"
+          }
+        },
+        {
+          "name": "Update / deactivate a customer",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/customers/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "customers",
+                ":id"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"+91 98765 43210\"\n}"
+            },
+            "description": "Roles: Admin, Staff"
+          }
+        },
+        {
+          "name": "Invite customer to the portal",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/customers/:id/invite",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "customers",
+                ":id",
+                "invite"
+              ]
+            },
+            "description": "Roles: Admin, Staff"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Catalogue",
+      "item": [
+        {
+          "name": "List tax rules",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/taxes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "taxes"
+              ]
+            },
+            "description": "Roles: Admin, Staff"
+          }
+        },
+        {
+          "name": "Create tax rule",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/taxes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "taxes"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"GST 18%\",\n  \"rate\": \"18\",\n  \"isDefault\": true\n}"
+            },
+            "description": "Roles: Admin"
+          }
+        },
+        {
+          "name": "Update / archive tax rule",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/taxes/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "taxes",
+                ":id"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"ARCHIVED\"\n}"
+            },
+            "description": "Roles: Admin"
+          }
+        },
+        {
+          "name": "List products with variants and final prices",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/products",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products"
+              ]
+            },
+            "description": "Roles: Admin, Staff"
+          }
+        },
+        {
+          "name": "Product detail",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/products/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products",
+                ":id"
+              ]
+            },
+            "description": "Roles: Admin, Staff"
+          }
+        },
+        {
+          "name": "Create product (+ variants)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/products",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Brightloop POS\",\n  \"productType\": \"Software\",\n  \"salesPrice\": \"2000\",\n  \"costPrice\": \"600\",\n  \"variants\": [\n    {\n      \"attribute\": \"Brand\",\n      \"name\": \"Odoo\",\n      \"priceAdjustment\": \"560\"\n    }\n  ]\n}"
+            },
+            "description": "Roles: Admin"
+          }
+        },
+        {
+          "name": "Update / archive product",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/products/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products",
+                ":id"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"ARCHIVED\"\n}"
+            },
+            "description": "Roles: Admin"
+          }
+        },
+        {
+          "name": "Add variant",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/products/:id/variants",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products",
+                ":id",
+                "variants"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"attribute\": \"Brand\",\n  \"name\": \"Generic\",\n  \"priceAdjustment\": \"0\"\n}"
+            },
+            "description": "Roles: Admin"
+          }
+        },
+        {
+          "name": "Update variant",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/products/:id/variants/:variantId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "products",
+                ":id",
+                "variants",
+                ":variantId"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"priceAdjustment\": \"600\"\n}"
+            },
+            "description": "Roles: Admin"
+          }
+        },
+        {
+          "name": "List plans",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/plans",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "plans"
+              ]
+            },
+            "description": "Roles: Admin, Staff"
+          }
+        },
+        {
+          "name": "Plan detail",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/plans/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "plans",
+                ":id"
+              ]
+            },
+            "description": "Roles: Admin, Staff"
+          }
+        },
+        {
+          "name": "Create plan",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/plans",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "plans"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Growth Monthly\",\n  \"billingFrequency\": \"MONTHLY\",\n  \"price\": \"999\",\n  \"minQuantity\": 1,\n  \"availableFrom\": \"2026-01-01\",\n  \"termLength\": 12\n}"
+            },
+            "description": "Roles: Admin"
+          }
+        },
+        {
+          "name": "Update plan",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/plans/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "plans",
+                ":id"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"allowPause\": false\n}"
+            },
+            "description": "Roles: Admin"
+          }
+        },
+        {
+          "name": "List discounts (?state=current|expired|exhausted|scheduled)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/discounts",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "discounts"
+              ]
+            },
+            "description": "Roles: Admin, Staff"
+          }
+        },
+        {
+          "name": "Discount detail, usage and history",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/discounts/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "discounts",
+                ":id"
+              ]
+            },
+            "description": "Roles: Admin, Staff"
+          }
+        },
+        {
+          "name": "Create discount rule",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/discounts",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "discounts"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"SEATS10\",\n  \"name\": \"10% for 10+ seats\",\n  \"type\": \"PERCENTAGE\",\n  \"value\": \"10\",\n  \"minQuantity\": 10,\n  \"startsAt\": \"2026-01-01\",\n  \"scope\": \"ALL\",\n  \"usageLimit\": 100\n}"
+            },
+            "description": "Roles: Admin"
+          }
+        },
+        {
+          "name": "Update / deactivate discount",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/discounts/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "discounts",
+                ":id"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"ARCHIVED\"\n}"
+            },
+            "description": "Roles: Admin"
+          }
+        },
+        {
+          "name": "Evaluate which discounts apply to draft lines",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/discounts/eligible",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "discounts",
+                "eligible"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"planId\": \"<plan-uuid>\",\n  \"lines\": [\n    {\n      \"type\": \"PLAN\",\n      \"quantity\": 5,\n      \"discountPercent\": \"0\"\n    },\n    {\n      \"type\": \"PRODUCT\",\n      \"productId\": \"<product-uuid>\",\n      \"variantId\": \"<variant-uuid>\",\n      \"quantity\": 5,\n      \"discountPercent\": \"0\"\n    }\n  ]\n}"
+            },
+            "description": "Roles: Admin, Staff"
+          }
+        },
+        {
+          "name": "List quotation templates",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/templates",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "templates"
+              ]
+            },
+            "description": "Roles: Admin, Staff"
+          }
+        },
+        {
+          "name": "Create quotation template",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/templates",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "templates"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Enterprise annual\",\n  \"planId\": \"<plan-uuid>\",\n  \"validityDays\": 30,\n  \"lines\": [\n    {\n      \"type\": \"PLAN\",\n      \"quantity\": 10\n    }\n  ]\n}"
+            },
+            "description": "Roles: Admin, Staff"
+          }
+        },
+        {
+          "name": "Update template",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/templates/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "templates",
+                ":id"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"validityDays\": 45\n}"
+            },
+            "description": "Roles: Admin, Staff"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Quotations",
+      "item": [
+        {
+          "name": "List quotations",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/quotations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "quotations"
+              ]
+            },
+            "description": "Roles: Admin, Staff"
+          }
+        },
+        {
+          "name": "Quotation detail",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/quotations/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "quotations",
+                ":id"
+              ]
+            },
+            "description": "Roles: Admin, Staff"
+          }
+        },
+        {
+          "name": "Server-side pricing preview",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/quotations/preview",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "quotations",
+                "preview"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"planId\": \"<plan-uuid>\",\n  \"lines\": [\n    {\n      \"type\": \"PLAN\",\n      \"quantity\": 5,\n      \"discountPercent\": \"0\"\n    },\n    {\n      \"type\": \"PRODUCT\",\n      \"productId\": \"<product-uuid>\",\n      \"variantId\": \"<variant-uuid>\",\n      \"quantity\": 5,\n      \"discountPercent\": \"0\"\n    }\n  ],\n  \"discountId\": null\n}"
+            },
+            "description": "Roles: Admin, Staff"
+          }
+        },
+        {
+          "name": "Create quotation (optionally from template)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/quotations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "quotations"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"<customer-uuid>\",\n  \"planId\": \"<plan-uuid>\",\n  \"lines\": [\n    {\n      \"type\": \"PLAN\",\n      \"quantity\": 5,\n      \"discountPercent\": \"0\"\n    },\n    {\n      \"type\": \"PRODUCT\",\n      \"productId\": \"<product-uuid>\",\n      \"variantId\": \"<variant-uuid>\",\n      \"quantity\": 5,\n      \"discountPercent\": \"0\"\n    }\n  ],\n  \"validityDays\": 30\n}"
+            },
+            "description": "Roles: Admin, Staff"
+          }
+        },
+        {
+          "name": "Edit draft quotation",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/quotations/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "quotations",
+                ":id"
+              ]
+            },
+            "description": "Roles: Admin, Staff"
+          }
+        },
+        {
+          "name": "Send quotation PDF by email",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/quotations/:id/send",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "quotations",
+                ":id",
+                "send"
+              ]
+            },
+            "description": "Roles: Admin, Staff"
+          }
+        },
+        {
+          "name": "Mark accepted",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/quotations/:id/accept",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "quotations",
+                ":id",
+                "accept"
+              ]
+            },
+            "description": "Roles: Admin, Staff"
+          }
+        },
+        {
+          "name": "Mark rejected",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/quotations/:id/reject",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "quotations",
+                ":id",
+                "reject"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Budget\"\n}"
+            },
+            "description": "Roles: Admin, Staff"
+          }
+        },
+        {
+          "name": "Back to draft for revision",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/quotations/:id/revise",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "quotations",
+                ":id",
+                "revise"
+              ]
+            },
+            "description": "Roles: Admin, Staff"
+          }
+        },
+        {
+          "name": "Convert accepted quotation into a confirmed subscription",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/quotations/:id/convert",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "quotations",
+                ":id",
+                "convert"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"startDate\": \"2026-11-01\"\n}"
+            },
+            "description": "Roles: Admin, Staff"
+          }
+        },
+        {
+          "name": "Quotation PDF",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/quotations/:id/pdf",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "quotations",
+                ":id",
+                "pdf"
+              ]
+            },
+            "description": "Roles: Admin, Staff"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Subscriptions",
+      "item": [
+        {
+          "name": "List (?status=&view=endingSoon|dueForBilling)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/subscriptions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "subscriptions"
+              ]
+            },
+            "description": "Roles: Admin, Staff"
+          }
+        },
+        {
+          "name": "Detail, history, invoices, upcoming billing",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/subscriptions/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "subscriptions",
+                ":id"
+              ]
+            },
+            "description": "Roles: Admin, Staff"
+          }
+        },
+        {
+          "name": "Create draft subscription",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/subscriptions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "subscriptions"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"<customer-uuid>\",\n  \"planId\": \"<plan-uuid>\",\n  \"startDate\": \"2026-11-01\",\n  \"lines\": [\n    {\n      \"type\": \"PLAN\",\n      \"quantity\": 5,\n      \"discountPercent\": \"0\"\n    },\n    {\n      \"type\": \"PRODUCT\",\n      \"productId\": \"<product-uuid>\",\n      \"variantId\": \"<variant-uuid>\",\n      \"quantity\": 5,\n      \"discountPercent\": \"0\"\n    }\n  ]\n}"
+            },
+            "description": "Roles: Admin, Staff"
+          }
+        },
+        {
+          "name": "Edit subscription (rules depend on status)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/subscriptions/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "subscriptions",
+                ":id"
+              ]
+            },
+            "description": "Roles: Admin, Staff"
+          }
+        },
+        {
+          "name": "Draft → Quotation (emails quotation)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/subscriptions/:id/send-quotation",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "subscriptions",
+                ":id",
+                "send-quotation"
+              ]
+            },
+            "description": "Roles: Admin, Staff"
+          }
+        },
+        {
+          "name": "→ Confirmed",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/subscriptions/:id/confirm",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "subscriptions",
+                ":id",
+                "confirm"
+              ]
+            },
+            "description": "Roles: Admin, Staff"
+          }
+        },
+        {
+          "name": "Confirmed → Active",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/subscriptions/:id/activate",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "subscriptions",
+                ":id",
+                "activate"
+              ]
+            },
+            "description": "Roles: Admin, Staff"
+          }
+        },
+        {
+          "name": "Active → Paused",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/subscriptions/:id/pause",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "subscriptions",
+                ":id",
+                "pause"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Seasonal\"\n}"
+            },
+            "description": "Roles: Admin, Staff"
+          }
+        },
+        {
+          "name": "Paused → Active",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/subscriptions/:id/resume",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "subscriptions",
+                ":id",
+                "resume"
+              ]
+            },
+            "description": "Roles: Admin, Staff"
+          }
+        },
+        {
+          "name": "Close early / cancel",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/subscriptions/:id/close",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "subscriptions",
+                ":id",
+                "close"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Customer request\"\n}"
+            },
+            "description": "Roles: Admin, Staff"
+          }
+        },
+        {
+          "name": "Renew for N periods",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/subscriptions/:id/renew",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "subscriptions",
+                ":id",
+                "renew"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"periods\": 12\n}"
+            },
+            "description": "Roles: Admin, Staff"
+          }
+        },
+        {
+          "name": "Adjust next billing date (audited)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/subscriptions/:id/next-billing-date",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "subscriptions",
+                ":id",
+                "next-billing-date"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nextBillingDate\": \"2026-10-31\"\n}"
+            },
+            "description": "Roles: Admin, Staff"
+          }
+        },
+        {
+          "name": "Customer change requests",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/requests",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "requests"
+              ]
+            },
+            "description": "Roles: Admin, Staff"
+          }
+        },
+        {
+          "name": "Approve / reject a change request",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/requests/:id/review",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "requests",
+                ":id",
+                "review"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"decision\": \"APPROVED\"\n}"
+            },
+            "description": "Roles: Admin, Staff"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Billing",
+      "item": [
+        {
+          "name": "Subscriptions due for billing (?asOf=)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/billing/preview",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "billing",
+                "preview"
+              ]
+            },
+            "description": "Roles: Admin, Staff"
+          }
+        },
+        {
+          "name": "Run recurring billing now",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/billing/run",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "billing",
+                "run"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "description": "Roles: Admin, Staff"
+          }
+        },
+        {
+          "name": "Billing run history",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/billing/runs",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "billing",
+                "runs"
+              ]
+            },
+            "description": "Roles: Admin, Staff"
+          }
+        },
+        {
+          "name": "Billing run detail and events",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/billing/runs/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "billing",
+                "runs",
+                ":id"
+              ]
+            },
+            "description": "Roles: Admin, Staff"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Invoices",
+      "item": [
+        {
+          "name": "List (?status=OVERDUE|OPEN|PAID…&from=&to=)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/invoices",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "invoices"
+              ]
+            },
+            "description": "Roles: Admin, Staff"
+          }
+        },
+        {
+          "name": "Invoice detail with payments",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/invoices/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "invoices",
+                ":id"
+              ]
+            },
+            "description": "Roles: Admin, Staff"
+          }
+        },
+        {
+          "name": "Create manual invoice",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/invoices",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "invoices"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"<customer-uuid>\",\n  \"lines\": [\n    {\n      \"type\": \"PRODUCT\",\n      \"productId\": \"<product-uuid>\",\n      \"variantId\": \"<variant-uuid>\",\n      \"quantity\": 5,\n      \"discountPercent\": \"0\"\n    }\n  ]\n}"
+            },
+            "description": "Roles: Admin, Staff"
+          }
+        },
+        {
+          "name": "Edit draft invoice (due date / notes)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/invoices/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "invoices",
+                ":id"
+              ]
+            },
+            "description": "Roles: Admin, Staff"
+          }
+        },
+        {
+          "name": "Draft → Confirmed",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/invoices/:id/confirm",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "invoices",
+                ":id",
+                "confirm"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sendEmail\": true\n}"
+            },
+            "description": "Roles: Admin, Staff"
+          }
+        },
+        {
+          "name": "Cancel with reason",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/invoices/:id/cancel",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "invoices",
+                ":id",
+                "cancel"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Raised in error\"\n}"
+            },
+            "description": "Roles: Admin, Staff"
+          }
+        },
+        {
+          "name": "Email invoice PDF",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/invoices/:id/send",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "invoices",
+                ":id",
+                "send"
+              ]
+            },
+            "description": "Roles: Admin, Staff"
+          }
+        },
+        {
+          "name": "Invoice PDF",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/invoices/:id/pdf",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "invoices",
+                ":id",
+                "pdf"
+              ]
+            },
+            "description": "Roles: Admin, Staff"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Payments",
+      "item": [
+        {
+          "name": "Reconciliation list (?from=&to=&method=&customerId=&invoiceId=&status=)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/payments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "payments"
+              ]
+            },
+            "description": "Roles: Admin, Staff"
+          }
+        },
+        {
+          "name": "Payment detail",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/payments/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "payments",
+                ":id"
+              ]
+            },
+            "description": "Roles: Admin, Staff"
+          }
+        },
+        {
+          "name": "Record payment and allocate to invoices",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/payments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "payments"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerId\": \"<customer-uuid>\",\n  \"method\": \"BANK_TRANSFER\",\n  \"amount\": \"5000.00\",\n  \"paymentDate\": \"2026-10-31\",\n  \"reference\": \"UTR123456\",\n  \"allocations\": [\n    {\n      \"invoiceId\": \"<invoice-uuid>\",\n      \"amount\": \"5000.00\"\n    }\n  ]\n}"
+            },
+            "description": "Roles: Admin, Staff"
+          }
+        },
+        {
+          "name": "Void payment (reverses allocations)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/payments/:id/void",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "payments",
+                ":id",
+                "void"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Duplicate entry\"\n}"
+            },
+            "description": "Roles: Admin"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reports",
+      "item": [
+        {
+          "name": "Admin/staff dashboard KPIs",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dashboard/summary",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dashboard",
+                "summary"
+              ]
+            },
+            "description": "Roles: Admin, Staff"
+          }
+        },
+        {
+          "name": "Finance report (?from=&to=&billingFrequency=&customerId=&planId=&invoiceStatus=&paymentMethod=)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/reports/finance",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reports",
+                "finance"
+              ]
+            },
+            "description": "Roles: Admin"
+          }
+        },
+        {
+          "name": "CSV export (?kind=summary|invoices|payments)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/reports/finance/export.csv",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reports",
+                "finance",
+                "export.csv"
+              ]
+            },
+            "description": "Roles: Admin"
+          }
+        },
+        {
+          "name": "PDF export",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/reports/finance/export.pdf",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reports",
+                "finance",
+                "export.pdf"
+              ]
+            },
+            "description": "Roles: Admin"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Portal",
+      "item": [
+        {
+          "name": "Display settings (currency, timezone, company name)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/portal/config",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "portal",
+                "config"
+              ]
+            },
+            "description": "Roles: Customer"
+          }
+        },
+        {
+          "name": "Customer dashboard",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/portal/dashboard",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "portal",
+                "dashboard"
+              ]
+            },
+            "description": "Roles: Customer"
+          }
+        },
+        {
+          "name": "Own subscriptions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/portal/subscriptions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "portal",
+                "subscriptions"
+              ]
+            },
+            "description": "Roles: Customer"
+          }
+        },
+        {
+          "name": "Own subscription detail",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/portal/subscriptions/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "portal",
+                "subscriptions",
+                ":id"
+              ]
+            },
+            "description": "Roles: Customer"
+          }
+        },
+        {
+          "name": "Request pause/resume/renew/cancel",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/portal/subscriptions/:id/requests",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "portal",
+                "subscriptions",
+                ":id",
+                "requests"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"PAUSE\",\n  \"message\": \"Closed for renovation\"\n}"
+            },
+            "description": "Roles: Customer"
+          }
+        },
+        {
+          "name": "Own change requests",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/portal/requests",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "portal",
+                "requests"
+              ]
+            },
+            "description": "Roles: Customer"
+          }
+        },
+        {
+          "name": "Own invoices",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/portal/invoices",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "portal",
+                "invoices"
+              ]
+            },
+            "description": "Roles: Customer"
+          }
+        },
+        {
+          "name": "Own invoice detail",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/portal/invoices/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "portal",
+                "invoices",
+                ":id"
+              ]
+            },
+            "description": "Roles: Customer"
+          }
+        },
+        {
+          "name": "Own invoice PDF",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/portal/invoices/:id/pdf",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "portal",
+                "invoices",
+                ":id",
+                "pdf"
+              ]
+            },
+            "description": "Roles: Customer"
+          }
+        },
+        {
+          "name": "Own payment history",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/portal/payments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "portal",
+                "payments"
+              ]
+            },
+            "description": "Roles: Customer"
+          }
+        },
+        {
+          "name": "Own quotations",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/portal/quotations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "portal",
+                "quotations"
+              ]
+            },
+            "description": "Roles: Customer"
+          }
+        },
+        {
+          "name": "Own quotation detail",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/portal/quotations/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "portal",
+                "quotations",
+                ":id"
+              ]
+            },
+            "description": "Roles: Customer"
+          }
+        },
+        {
+          "name": "Own quotation PDF",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/portal/quotations/:id/pdf",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "portal",
+                "quotations",
+                ":id",
+                "pdf"
+              ]
+            },
+            "description": "Roles: Customer"
+          }
+        },
+        {
+          "name": "Accept a sent quotation",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/portal/quotations/:id/accept",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "portal",
+                "quotations",
+                ":id",
+                "accept"
+              ]
+            },
+            "description": "Roles: Customer"
+          }
+        },
+        {
+          "name": "Decline a sent quotation",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/portal/quotations/:id/reject",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "portal",
+                "quotations",
+                ":id",
+                "reject"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Not now\"\n}"
+            },
+            "description": "Roles: Customer"
+          }
+        },
+        {
+          "name": "Browse available plans",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/portal/plans",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "portal",
+                "plans"
+              ]
+            },
+            "description": "Roles: Customer"
+          }
+        },
+        {
+          "name": "Request a quotation for a plan",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/portal/plans/:id/request-quote",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "portal",
+                "plans",
+                ":id",
+                "request-quote"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantity\": 3\n}"
+            },
+            "description": "Roles: Customer"
+          }
+        },
+        {
+          "name": "Own billing profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/portal/profile",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "portal",
+                "profile"
+              ]
+            },
+            "description": "Roles: Customer"
+          }
+        },
+        {
+          "name": "Update own billing profile",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/portal/profile",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "portal",
+                "profile"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"+91 90000 00000\"\n}"
+            },
+            "description": "Roles: Customer"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Settings",
+      "item": [
+        {
+          "name": "Company & billing settings",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/settings",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "settings"
+              ]
+            },
+            "description": "Roles: Admin, Staff"
+          }
+        },
+        {
+          "name": "Update settings",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/settings",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "settings"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"autoConfirmRecurringInvoices\": true\n}"
+            },
+            "description": "Roles: Admin"
+          }
+        },
+        {
+          "name": "Permission matrix",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/settings/permissions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "settings",
+                "permissions"
+              ]
+            },
+            "description": "Roles: Admin"
+          }
+        },
+        {
+          "name": "Development email outbox",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/settings/outbox",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "settings",
+                "outbox"
+              ]
+            },
+            "description": "Roles: Admin"
+          }
+        },
+        {
+          "name": "Audit log",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/settings/audit",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "settings",
+                "audit"
+              ]
+            },
+            "description": "Roles: Admin"
+          }
+        }
+      ]
+    },
+    {
+      "name": "System",
+      "item": [
+        {
+          "name": "Health check (DB connectivity)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "health"
+              ]
+            },
+            "description": "Roles: Public"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,5278 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Brightloop Software — Subscription Management System API",
+    "version": "1.0.0",
+    "description": "REST API (v1). Authenticate with POST /auth/login and send `Authorization: Bearer <accessToken>`."
+  },
+  "servers": [
+    {
+      "url": "/api/v1"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "paths": {
+    "/auth/register": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Register a customer account",
+        "description": "Roles: Public",
+        "security": [],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "name": "Asha Verma",
+                "email": "asha@example.com",
+                "password": "Str0ng!Pass",
+                "companyName": "Verma Stores"
+              },
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Sign in (returns access token, sets refresh cookie)",
+        "description": "Roles: Public",
+        "security": [],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "email": "admin@brightloop.demo",
+                "password": "Admin@12345"
+              },
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/auth/refresh": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Rotate refresh cookie and get a new access token",
+        "description": "Roles: Cookie",
+        "security": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Revoke the refresh token",
+        "description": "Roles: Cookie",
+        "security": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/auth/forgot-password": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Email a time-limited reset link (generic response)",
+        "description": "Roles: Public",
+        "security": [],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "email": "customer@example.com"
+              },
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/auth/reset-password": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Set a new password with a reset token",
+        "description": "Roles: Public",
+        "security": [],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "token": "<token>",
+                "password": "N3w!Password"
+              },
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/auth/me": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Current user and permissions",
+        "description": "Roles: Any",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Update own name/phone",
+        "description": "Roles: Any",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "name": "New Name"
+              },
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/auth/change-password": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Change own password",
+        "description": "Roles: Any",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "currentPassword": "...",
+                "newPassword": "..."
+              },
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "tags": [
+          "Staff"
+        ],
+        "summary": "List staff and admins",
+        "description": "Roles: Admin",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Staff"
+        ],
+        "summary": "Create a staff/admin account",
+        "description": "Roles: Admin",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "name": "New Staff",
+                "email": "new.staff@brightloop.demo",
+                "role": "STAFF",
+                "sendInvite": true
+              },
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/users/{id}": {
+      "patch": {
+        "tags": [
+          "Staff"
+        ],
+        "summary": "Update role/status (deactivate)",
+        "description": "Roles: Admin",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "status": "INACTIVE"
+              },
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/users/{id}/send-reset": {
+      "post": {
+        "tags": [
+          "Staff"
+        ],
+        "summary": "Send a password reset link",
+        "description": "Roles: Admin",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/customers": {
+      "get": {
+        "tags": [
+          "Customers"
+        ],
+        "summary": "List/search customers (?search=&status=&page=)",
+        "description": "Roles: Admin, Staff",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Customers"
+        ],
+        "summary": "Create a customer",
+        "description": "Roles: Admin, Staff",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "name": "Rahul Mehta",
+                "companyName": "Mehta Retail",
+                "email": "rahul@mehta.example",
+                "city": "Lucknow"
+              },
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/customers/{id}": {
+      "get": {
+        "tags": [
+          "Customers"
+        ],
+        "summary": "Customer detail with linked records",
+        "description": "Roles: Admin, Staff",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Customers"
+        ],
+        "summary": "Update / deactivate a customer",
+        "description": "Roles: Admin, Staff",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "phone": "+91 98765 43210"
+              },
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/customers/{id}/invite": {
+      "post": {
+        "tags": [
+          "Customers"
+        ],
+        "summary": "Invite customer to the portal",
+        "description": "Roles: Admin, Staff",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/taxes": {
+      "get": {
+        "tags": [
+          "Catalogue"
+        ],
+        "summary": "List tax rules",
+        "description": "Roles: Admin, Staff",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Catalogue"
+        ],
+        "summary": "Create tax rule",
+        "description": "Roles: Admin",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "name": "GST 18%",
+                "rate": "18",
+                "isDefault": true
+              },
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/taxes/{id}": {
+      "patch": {
+        "tags": [
+          "Catalogue"
+        ],
+        "summary": "Update / archive tax rule",
+        "description": "Roles: Admin",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "status": "ARCHIVED"
+              },
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/products": {
+      "get": {
+        "tags": [
+          "Catalogue"
+        ],
+        "summary": "List products with variants and final prices",
+        "description": "Roles: Admin, Staff",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Catalogue"
+        ],
+        "summary": "Create product (+ variants)",
+        "description": "Roles: Admin",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "name": "Brightloop POS",
+                "productType": "Software",
+                "salesPrice": "2000",
+                "costPrice": "600",
+                "variants": [
+                  {
+                    "attribute": "Brand",
+                    "name": "Odoo",
+                    "priceAdjustment": "560"
+                  }
+                ]
+              },
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/products/{id}": {
+      "get": {
+        "tags": [
+          "Catalogue"
+        ],
+        "summary": "Product detail",
+        "description": "Roles: Admin, Staff",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Catalogue"
+        ],
+        "summary": "Update / archive product",
+        "description": "Roles: Admin",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "status": "ARCHIVED"
+              },
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/products/{id}/variants": {
+      "post": {
+        "tags": [
+          "Catalogue"
+        ],
+        "summary": "Add variant",
+        "description": "Roles: Admin",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "attribute": "Brand",
+                "name": "Generic",
+                "priceAdjustment": "0"
+              },
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/products/{id}/variants/{variantId}": {
+      "patch": {
+        "tags": [
+          "Catalogue"
+        ],
+        "summary": "Update variant",
+        "description": "Roles: Admin",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "variantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "priceAdjustment": "600"
+              },
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/plans": {
+      "get": {
+        "tags": [
+          "Catalogue"
+        ],
+        "summary": "List plans",
+        "description": "Roles: Admin, Staff",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Catalogue"
+        ],
+        "summary": "Create plan",
+        "description": "Roles: Admin",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "name": "Growth Monthly",
+                "billingFrequency": "MONTHLY",
+                "price": "999",
+                "minQuantity": 1,
+                "availableFrom": "2026-01-01",
+                "termLength": 12
+              },
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/plans/{id}": {
+      "get": {
+        "tags": [
+          "Catalogue"
+        ],
+        "summary": "Plan detail",
+        "description": "Roles: Admin, Staff",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Catalogue"
+        ],
+        "summary": "Update plan",
+        "description": "Roles: Admin",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "allowPause": false
+              },
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/discounts": {
+      "get": {
+        "tags": [
+          "Catalogue"
+        ],
+        "summary": "List discounts (?state=current|expired|exhausted|scheduled)",
+        "description": "Roles: Admin, Staff",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Catalogue"
+        ],
+        "summary": "Create discount rule",
+        "description": "Roles: Admin",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "code": "SEATS10",
+                "name": "10% for 10+ seats",
+                "type": "PERCENTAGE",
+                "value": "10",
+                "minQuantity": 10,
+                "startsAt": "2026-01-01",
+                "scope": "ALL",
+                "usageLimit": 100
+              },
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/discounts/{id}": {
+      "get": {
+        "tags": [
+          "Catalogue"
+        ],
+        "summary": "Discount detail, usage and history",
+        "description": "Roles: Admin, Staff",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Catalogue"
+        ],
+        "summary": "Update / deactivate discount",
+        "description": "Roles: Admin",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "status": "ARCHIVED"
+              },
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/discounts/eligible": {
+      "post": {
+        "tags": [
+          "Catalogue"
+        ],
+        "summary": "Evaluate which discounts apply to draft lines",
+        "description": "Roles: Admin, Staff",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "planId": "<plan-uuid>",
+                "lines": [
+                  {
+                    "type": "PLAN",
+                    "quantity": 5,
+                    "discountPercent": "0"
+                  },
+                  {
+                    "type": "PRODUCT",
+                    "productId": "<product-uuid>",
+                    "variantId": "<variant-uuid>",
+                    "quantity": 5,
+                    "discountPercent": "0"
+                  }
+                ]
+              },
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/templates": {
+      "get": {
+        "tags": [
+          "Catalogue"
+        ],
+        "summary": "List quotation templates",
+        "description": "Roles: Admin, Staff",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Catalogue"
+        ],
+        "summary": "Create quotation template",
+        "description": "Roles: Admin, Staff",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "name": "Enterprise annual",
+                "planId": "<plan-uuid>",
+                "validityDays": 30,
+                "lines": [
+                  {
+                    "type": "PLAN",
+                    "quantity": 10
+                  }
+                ]
+              },
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/templates/{id}": {
+      "patch": {
+        "tags": [
+          "Catalogue"
+        ],
+        "summary": "Update template",
+        "description": "Roles: Admin, Staff",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "validityDays": 45
+              },
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/quotations": {
+      "get": {
+        "tags": [
+          "Quotations"
+        ],
+        "summary": "List quotations",
+        "description": "Roles: Admin, Staff",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Quotations"
+        ],
+        "summary": "Create quotation (optionally from template)",
+        "description": "Roles: Admin, Staff",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "customerId": "<customer-uuid>",
+                "planId": "<plan-uuid>",
+                "lines": [
+                  {
+                    "type": "PLAN",
+                    "quantity": 5,
+                    "discountPercent": "0"
+                  },
+                  {
+                    "type": "PRODUCT",
+                    "productId": "<product-uuid>",
+                    "variantId": "<variant-uuid>",
+                    "quantity": 5,
+                    "discountPercent": "0"
+                  }
+                ],
+                "validityDays": 30
+              },
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/quotations/{id}": {
+      "get": {
+        "tags": [
+          "Quotations"
+        ],
+        "summary": "Quotation detail",
+        "description": "Roles: Admin, Staff",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Quotations"
+        ],
+        "summary": "Edit draft quotation",
+        "description": "Roles: Admin, Staff",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/quotations/preview": {
+      "post": {
+        "tags": [
+          "Quotations"
+        ],
+        "summary": "Server-side pricing preview",
+        "description": "Roles: Admin, Staff",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "planId": "<plan-uuid>",
+                "lines": [
+                  {
+                    "type": "PLAN",
+                    "quantity": 5,
+                    "discountPercent": "0"
+                  },
+                  {
+                    "type": "PRODUCT",
+                    "productId": "<product-uuid>",
+                    "variantId": "<variant-uuid>",
+                    "quantity": 5,
+                    "discountPercent": "0"
+                  }
+                ],
+                "discountId": null
+              },
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/quotations/{id}/send": {
+      "post": {
+        "tags": [
+          "Quotations"
+        ],
+        "summary": "Send quotation PDF by email",
+        "description": "Roles: Admin, Staff",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/quotations/{id}/accept": {
+      "post": {
+        "tags": [
+          "Quotations"
+        ],
+        "summary": "Mark accepted",
+        "description": "Roles: Admin, Staff",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/quotations/{id}/reject": {
+      "post": {
+        "tags": [
+          "Quotations"
+        ],
+        "summary": "Mark rejected",
+        "description": "Roles: Admin, Staff",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "reason": "Budget"
+              },
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/quotations/{id}/revise": {
+      "post": {
+        "tags": [
+          "Quotations"
+        ],
+        "summary": "Back to draft for revision",
+        "description": "Roles: Admin, Staff",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/quotations/{id}/convert": {
+      "post": {
+        "tags": [
+          "Quotations"
+        ],
+        "summary": "Convert accepted quotation into a confirmed subscription",
+        "description": "Roles: Admin, Staff",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "startDate": "2026-11-01"
+              },
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/quotations/{id}/pdf": {
+      "get": {
+        "tags": [
+          "Quotations"
+        ],
+        "summary": "Quotation PDF",
+        "description": "Roles: Admin, Staff",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/subscriptions": {
+      "get": {
+        "tags": [
+          "Subscriptions"
+        ],
+        "summary": "List (?status=&view=endingSoon|dueForBilling)",
+        "description": "Roles: Admin, Staff",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Subscriptions"
+        ],
+        "summary": "Create draft subscription",
+        "description": "Roles: Admin, Staff",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "customerId": "<customer-uuid>",
+                "planId": "<plan-uuid>",
+                "startDate": "2026-11-01",
+                "lines": [
+                  {
+                    "type": "PLAN",
+                    "quantity": 5,
+                    "discountPercent": "0"
+                  },
+                  {
+                    "type": "PRODUCT",
+                    "productId": "<product-uuid>",
+                    "variantId": "<variant-uuid>",
+                    "quantity": 5,
+                    "discountPercent": "0"
+                  }
+                ]
+              },
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/subscriptions/{id}": {
+      "get": {
+        "tags": [
+          "Subscriptions"
+        ],
+        "summary": "Detail, history, invoices, upcoming billing",
+        "description": "Roles: Admin, Staff",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Subscriptions"
+        ],
+        "summary": "Edit subscription (rules depend on status)",
+        "description": "Roles: Admin, Staff",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/subscriptions/{id}/send-quotation": {
+      "post": {
+        "tags": [
+          "Subscriptions"
+        ],
+        "summary": "Draft → Quotation (emails quotation)",
+        "description": "Roles: Admin, Staff",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/subscriptions/{id}/confirm": {
+      "post": {
+        "tags": [
+          "Subscriptions"
+        ],
+        "summary": "→ Confirmed",
+        "description": "Roles: Admin, Staff",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/subscriptions/{id}/activate": {
+      "post": {
+        "tags": [
+          "Subscriptions"
+        ],
+        "summary": "Confirmed → Active",
+        "description": "Roles: Admin, Staff",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/subscriptions/{id}/pause": {
+      "post": {
+        "tags": [
+          "Subscriptions"
+        ],
+        "summary": "Active → Paused",
+        "description": "Roles: Admin, Staff",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "reason": "Seasonal"
+              },
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/subscriptions/{id}/resume": {
+      "post": {
+        "tags": [
+          "Subscriptions"
+        ],
+        "summary": "Paused → Active",
+        "description": "Roles: Admin, Staff",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/subscriptions/{id}/close": {
+      "post": {
+        "tags": [
+          "Subscriptions"
+        ],
+        "summary": "Close early / cancel",
+        "description": "Roles: Admin, Staff",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "reason": "Customer request"
+              },
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/subscriptions/{id}/renew": {
+      "post": {
+        "tags": [
+          "Subscriptions"
+        ],
+        "summary": "Renew for N periods",
+        "description": "Roles: Admin, Staff",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "periods": 12
+              },
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/subscriptions/{id}/next-billing-date": {
+      "patch": {
+        "tags": [
+          "Subscriptions"
+        ],
+        "summary": "Adjust next billing date (audited)",
+        "description": "Roles: Admin, Staff",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "nextBillingDate": "2026-10-31"
+              },
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/requests": {
+      "get": {
+        "tags": [
+          "Subscriptions"
+        ],
+        "summary": "Customer change requests",
+        "description": "Roles: Admin, Staff",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/requests/{id}/review": {
+      "post": {
+        "tags": [
+          "Subscriptions"
+        ],
+        "summary": "Approve / reject a change request",
+        "description": "Roles: Admin, Staff",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "decision": "APPROVED"
+              },
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/billing/preview": {
+      "get": {
+        "tags": [
+          "Billing"
+        ],
+        "summary": "Subscriptions due for billing (?asOf=)",
+        "description": "Roles: Admin, Staff",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/billing/run": {
+      "post": {
+        "tags": [
+          "Billing"
+        ],
+        "summary": "Run recurring billing now",
+        "description": "Roles: Admin, Staff",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {},
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/billing/runs": {
+      "get": {
+        "tags": [
+          "Billing"
+        ],
+        "summary": "Billing run history",
+        "description": "Roles: Admin, Staff",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/billing/runs/{id}": {
+      "get": {
+        "tags": [
+          "Billing"
+        ],
+        "summary": "Billing run detail and events",
+        "description": "Roles: Admin, Staff",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/invoices": {
+      "get": {
+        "tags": [
+          "Invoices"
+        ],
+        "summary": "List (?status=OVERDUE|OPEN|PAID…&from=&to=)",
+        "description": "Roles: Admin, Staff",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Invoices"
+        ],
+        "summary": "Create manual invoice",
+        "description": "Roles: Admin, Staff",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "customerId": "<customer-uuid>",
+                "lines": [
+                  {
+                    "type": "PRODUCT",
+                    "productId": "<product-uuid>",
+                    "variantId": "<variant-uuid>",
+                    "quantity": 5,
+                    "discountPercent": "0"
+                  }
+                ]
+              },
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/invoices/{id}": {
+      "get": {
+        "tags": [
+          "Invoices"
+        ],
+        "summary": "Invoice detail with payments",
+        "description": "Roles: Admin, Staff",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Invoices"
+        ],
+        "summary": "Edit draft invoice (due date / notes)",
+        "description": "Roles: Admin, Staff",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/invoices/{id}/confirm": {
+      "post": {
+        "tags": [
+          "Invoices"
+        ],
+        "summary": "Draft → Confirmed",
+        "description": "Roles: Admin, Staff",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "sendEmail": true
+              },
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/invoices/{id}/cancel": {
+      "post": {
+        "tags": [
+          "Invoices"
+        ],
+        "summary": "Cancel with reason",
+        "description": "Roles: Admin, Staff",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "reason": "Raised in error"
+              },
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/invoices/{id}/send": {
+      "post": {
+        "tags": [
+          "Invoices"
+        ],
+        "summary": "Email invoice PDF",
+        "description": "Roles: Admin, Staff",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/invoices/{id}/pdf": {
+      "get": {
+        "tags": [
+          "Invoices"
+        ],
+        "summary": "Invoice PDF",
+        "description": "Roles: Admin, Staff",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/payments": {
+      "get": {
+        "tags": [
+          "Payments"
+        ],
+        "summary": "Reconciliation list (?from=&to=&method=&customerId=&invoiceId=&status=)",
+        "description": "Roles: Admin, Staff",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Payments"
+        ],
+        "summary": "Record payment and allocate to invoices",
+        "description": "Roles: Admin, Staff",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "customerId": "<customer-uuid>",
+                "method": "BANK_TRANSFER",
+                "amount": "5000.00",
+                "paymentDate": "2026-10-31",
+                "reference": "UTR123456",
+                "allocations": [
+                  {
+                    "invoiceId": "<invoice-uuid>",
+                    "amount": "5000.00"
+                  }
+                ]
+              },
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/payments/{id}": {
+      "get": {
+        "tags": [
+          "Payments"
+        ],
+        "summary": "Payment detail",
+        "description": "Roles: Admin, Staff",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/payments/{id}/void": {
+      "post": {
+        "tags": [
+          "Payments"
+        ],
+        "summary": "Void payment (reverses allocations)",
+        "description": "Roles: Admin",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "reason": "Duplicate entry"
+              },
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/dashboard/summary": {
+      "get": {
+        "tags": [
+          "Reports"
+        ],
+        "summary": "Admin/staff dashboard KPIs",
+        "description": "Roles: Admin, Staff",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/reports/finance": {
+      "get": {
+        "tags": [
+          "Reports"
+        ],
+        "summary": "Finance report (?from=&to=&billingFrequency=&customerId=&planId=&invoiceStatus=&paymentMethod=)",
+        "description": "Roles: Admin",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/reports/finance/export.csv": {
+      "get": {
+        "tags": [
+          "Reports"
+        ],
+        "summary": "CSV export (?kind=summary|invoices|payments)",
+        "description": "Roles: Admin",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/reports/finance/export.pdf": {
+      "get": {
+        "tags": [
+          "Reports"
+        ],
+        "summary": "PDF export",
+        "description": "Roles: Admin",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/portal/config": {
+      "get": {
+        "tags": [
+          "Portal"
+        ],
+        "summary": "Display settings (currency, timezone, company name)",
+        "description": "Roles: Customer",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/portal/dashboard": {
+      "get": {
+        "tags": [
+          "Portal"
+        ],
+        "summary": "Customer dashboard",
+        "description": "Roles: Customer",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/portal/subscriptions": {
+      "get": {
+        "tags": [
+          "Portal"
+        ],
+        "summary": "Own subscriptions",
+        "description": "Roles: Customer",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/portal/subscriptions/{id}": {
+      "get": {
+        "tags": [
+          "Portal"
+        ],
+        "summary": "Own subscription detail",
+        "description": "Roles: Customer",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/portal/subscriptions/{id}/requests": {
+      "post": {
+        "tags": [
+          "Portal"
+        ],
+        "summary": "Request pause/resume/renew/cancel",
+        "description": "Roles: Customer",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "type": "PAUSE",
+                "message": "Closed for renovation"
+              },
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/portal/requests": {
+      "get": {
+        "tags": [
+          "Portal"
+        ],
+        "summary": "Own change requests",
+        "description": "Roles: Customer",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/portal/invoices": {
+      "get": {
+        "tags": [
+          "Portal"
+        ],
+        "summary": "Own invoices",
+        "description": "Roles: Customer",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/portal/invoices/{id}": {
+      "get": {
+        "tags": [
+          "Portal"
+        ],
+        "summary": "Own invoice detail",
+        "description": "Roles: Customer",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/portal/invoices/{id}/pdf": {
+      "get": {
+        "tags": [
+          "Portal"
+        ],
+        "summary": "Own invoice PDF",
+        "description": "Roles: Customer",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/portal/payments": {
+      "get": {
+        "tags": [
+          "Portal"
+        ],
+        "summary": "Own payment history",
+        "description": "Roles: Customer",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/portal/quotations": {
+      "get": {
+        "tags": [
+          "Portal"
+        ],
+        "summary": "Own quotations",
+        "description": "Roles: Customer",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/portal/quotations/{id}": {
+      "get": {
+        "tags": [
+          "Portal"
+        ],
+        "summary": "Own quotation detail",
+        "description": "Roles: Customer",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/portal/quotations/{id}/pdf": {
+      "get": {
+        "tags": [
+          "Portal"
+        ],
+        "summary": "Own quotation PDF",
+        "description": "Roles: Customer",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/portal/quotations/{id}/accept": {
+      "post": {
+        "tags": [
+          "Portal"
+        ],
+        "summary": "Accept a sent quotation",
+        "description": "Roles: Customer",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/portal/quotations/{id}/reject": {
+      "post": {
+        "tags": [
+          "Portal"
+        ],
+        "summary": "Decline a sent quotation",
+        "description": "Roles: Customer",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "reason": "Not now"
+              },
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/portal/plans": {
+      "get": {
+        "tags": [
+          "Portal"
+        ],
+        "summary": "Browse available plans",
+        "description": "Roles: Customer",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/portal/plans/{id}/request-quote": {
+      "post": {
+        "tags": [
+          "Portal"
+        ],
+        "summary": "Request a quotation for a plan",
+        "description": "Roles: Customer",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "quantity": 3
+              },
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/portal/profile": {
+      "get": {
+        "tags": [
+          "Portal"
+        ],
+        "summary": "Own billing profile",
+        "description": "Roles: Customer",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Portal"
+        ],
+        "summary": "Update own billing profile",
+        "description": "Roles: Customer",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "phone": "+91 90000 00000"
+              },
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/settings": {
+      "get": {
+        "tags": [
+          "Settings"
+        ],
+        "summary": "Company & billing settings",
+        "description": "Roles: Admin, Staff",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Settings"
+        ],
+        "summary": "Update settings",
+        "description": "Roles: Admin",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "autoConfirmRecurringInvoices": true
+              },
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/settings/permissions": {
+      "get": {
+        "tags": [
+          "Settings"
+        ],
+        "summary": "Permission matrix",
+        "description": "Roles: Admin",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/settings/outbox": {
+      "get": {
+        "tags": [
+          "Settings"
+        ],
+        "summary": "Development email outbox",
+        "description": "Roles: Admin",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/settings/audit": {
+      "get": {
+        "tags": [
+          "Settings"
+        ],
+        "summary": "Audit log",
+        "description": "Roles: Admin",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "tags": [
+          "System"
+        ],
+        "summary": "Health check (DB connectivity)",
+        "description": "Roles: Public",
+        "security": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK — `{ data, meta? }`"
+          },
+          "400": {
+            "description": "Validation error — `{ error: { code, message, details.fields } }`"
+          },
+          "401": {
+            "description": "Not authenticated"
+          },
+          "403": {
+            "description": "Not permitted for this role"
+          },
+          "404": {
+            "description": "Not found (also returned for records owned by another customer)"
+          },
+          "409": {
+            "description": "Conflict (duplicate)"
+          },
+          "422": {
+            "description": "Business rule violation"
+          }
+        }
+      }
+    }
+  }
+}
